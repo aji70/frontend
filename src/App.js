@@ -27,7 +27,6 @@ function App() {
         const transaction = await contract.setMessage(inputMessage);
         await transaction.wait();
         console.log("msg sent");
-        setInputMessage(" ");
       } catch (err) {
         console.error("Error:", err);
       }
@@ -69,8 +68,10 @@ function App() {
           value={inputMessage}
           onChange={handleMessageChange}
         />
+        <br /> <br />
         <button onClick={sendMessageToContract}>Set Message</button>
-        <button onClick={getMessageToContract}>click</button>
+        <br /> <br />
+        <button onClick={getMessageToContract}>Get Message</button>
       </div>
       <div>
         <p>{getmsg}</p>
