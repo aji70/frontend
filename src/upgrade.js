@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { ethers } from "ethers";
+import logo from "./logo.svg";
+import "./App.css";
 import contractABI from "./abi.json";
+const { ethers } = require("ethers");
 
 function App() {
+  const { msg, setMsg } = useState(" ");
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    setMsg((message) => message);
+  }
   const contractAddress = "0x6C747Ed0405c44f789DabA22db9a33645637F103";
 
   async function requestAccount() {
     await window.ethereum.request({ method: "eth_requestAccounts" });
   }
 
-  const [inputMessage, setInputMessage] = useState(""); // Renamed state variable
-  const [getmsg, setGetmsg] = useState("display Here");
-  async function sendMessageToContract() {
-    // Renamed function
+  async function setMessage() {
     if (typeof window.ethereum !== "undefined") {
       await requestAccount();
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -24,18 +29,15 @@ function App() {
       );
 
       try {
-        const transaction = await contract.setMessage(inputMessage);
+        const transaction = await contract.setMessage();
         await transaction.wait();
-        console.log("msg sent");
-        setInputMessage(" ");
+        console.log("Money withdrawn");
       } catch (err) {
         console.error("Error:", err);
       }
     }
   }
-
-  async function getMessageToContract() {
-    // Renamed function
+  async function getMessage() {
     if (typeof window.ethereum !== "undefined") {
       await requestAccount();
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -48,33 +50,39 @@ function App() {
 
       try {
         const transaction = await contract.getMessage();
-        setGetmsg(transaction);
-        console.log(transaction);
+        await transaction.wait();
+        console.log("Money withdrawn");
       } catch (err) {
         console.error("Error:", err);
       }
     }
   }
-
-  const handleMessageChange = (e) => {
-    setInputMessage(e.target.value);
-  };
-
   return (
     <div className="App">
-      <div>
-        <input
-          type="text"
-          placeholder="Enter your message"
-          value={inputMessage}
-          onChange={handleMessageChange}
-        />
-        <button onClick={sendMessageToContract}>Set Message</button>
-        <button onClick={getMessageToContract}>click</button>
-      </div>
-      <div>
-        <p>{getmsg}</p>
-      </div>
+      <header className="App-header">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Item..."
+            value={msg}
+            onChange={(e) => setMsg(e.target.value)}
+          />
+          <button onClick={setMessage}>SetMessage</button>
+          <h1 onClick={getMessage}>Get Message</h1>
+        </form>
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
     </div>
   );
 }
